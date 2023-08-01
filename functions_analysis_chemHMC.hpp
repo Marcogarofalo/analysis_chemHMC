@@ -2,6 +2,6 @@
 #define functions_analysis_chemHMC_H
 #include "non_linear_fit.hpp"
 
-double lhs_function_analysis_chemHMC_eg(int j, double**** in, int t, struct fit_type fit_info);
-
+double rhs_const(int n, int Nvar, double* x, int Npar, double* P);
+double lhs_radial_distr_function(int n, int e, int j, data_all gjack, struct fit_type fit_info);
 #endif
