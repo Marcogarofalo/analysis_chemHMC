@@ -19,6 +19,7 @@
 
 #include "correlators_analysis.hpp"
 #include "functions_analysis_chemHMC.hpp"
+#include "gamma_analysis.hpp"
 struct kinematic kinematic_2pt;
 
 generic_header read_head(FILE* stream) {
@@ -30,7 +31,7 @@ generic_header read_head(FILE* stream) {
     cs += fscanf(stream, "%lf\n", &header.rs[2]);
     cs += fscanf(stream, "%d\n", &header.size);// Nparticles
     header.mus.resize(1);
-    cs += fscanf(stream, "%lf\n", &header.mus[2]);// mass
+    cs += fscanf(stream, "%lf\n", &header.mus[0]);// mass
     cs += fscanf(stream, "%lf\n", &header.beta);// beta
     header.thetas.resize(5);
     cs += fscanf(stream, "%lf\n", &header.thetas[0]); //cutoff
@@ -209,8 +210,17 @@ int main(int argc, char** argv) {
     printf("ncorr=%d\n", head.ncorr);
     // printf("kappa=%g\n", head.kappa);
     read_xyz(infile, data, head);
-   
+
     double**** data_bin = binning(confs, head.ncorr, head.T, data, bin);
+    ///////////////////////////////////////////////////////////////////////////////
+    ////     gamma stuff here
+    mysprintf(namefile, NAMESIZE, "%s/out/%s_gamma", option[3], option[6]);
+    FILE* out_gamma = open_file(namefile, "w+");
+
+    file_head.l0 = head.T * 2;
+    gamma_correlator(option, kinematic_2pt, (char*)"P5P5", data_bin, Neff, namefile_plateaux, out_gamma, 0, "g(r)");
+    file_head.l0 = head.T ;
+    //////////////////////////////////////////////////////////////////////////////
     double**** conf_jack = myres->create(Neff, head.ncorr, head.T, data_bin);
     free_corr(Neff, head.ncorr, head.T, data_bin);
     free_corr(confs, head.ncorr, head.T, data);
@@ -230,9 +240,7 @@ int main(int argc, char** argv) {
     mysprintf(namefile, NAMESIZE, "%s/out/%s_log_meff_shifted", option[3],
         option[6]);
     FILE* outfile_log_meff_shifted = open_file(namefile, "w+");
-    mysprintf(namefile, NAMESIZE, "%s/out/%s_gamma", option[3], option[6]);
-    FILE* out_gamma = open_file(namefile, "w+");
-
+   
     char save_option[NAMESIZE];
     sprintf(save_option, "%s", option[1]);
     sprintf(option[1], "blind");
@@ -250,7 +258,7 @@ int main(int argc, char** argv) {
             fit_info_silent);
         free(tmp_meff_corr);
         // raw correlator
-        file_head.l0 = head.T*2;
+        file_head.l0 = head.T * 2;
         tmp_meff_corr = plateau_correlator_function(
             option, kinematic_2pt, (char*)"P5P5", conf_jack, Njack,
             namefile_plateaux, outfile_raw_corr, icorr, "cor", identity, dev_null,
