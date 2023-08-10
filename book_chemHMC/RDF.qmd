@@ -1,0 +1,56 @@
+# Radial distribution function
+
+```{r ,include=FALSE}
+library(Rose)
+library(ggplot2)
+library(plotly)
+library(knitr)
+df <- data.frame(x = 1:5, y = 1:5)
+f1 <- function(df) {
+  gg <- ggplot(df, aes(x,y)) + geom_point()
+  assign("ggp", plotly::ggplotly(gg), envir=parent.frame())
+  #ggp
+  df    # NOT returning a plot
+}
+res1 <- f1(df)
+ggp   # Let knit handle the plot
+myplotly(ggplot())
+#widgetframe::frameableWidget(ggplotly(ggp)%>%config(mathjax = "cdn") )
+```
+
+
+
+```{r, echo=FALSE, results='asis', warning=FALSE}
+
+
+mt1<-read_df("/home/garofalo/analysis/chemHMC/Argon/VII/out/RDF_Ar-VII.txt_raw_correlators_bin1")
+all_obs1<- get_all_corr(mt1)
+
+df<-add_corr_to_df(string = "bin=1",all_obs=all_obs1,mt=mt1,df=NULL,
+                   log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+########################
+mt<-read_df("/home/garofalo/analysis/chemHMC/Argon/VII/out/RDF_Ar-VII.txt_raw_correlators_bin10")
+all_obs<- get_all_corr(mt)
+
+df<-add_corr_to_df(string = "bin=10",all_obs=all_obs,mt=mt,df,
+                   log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+
+########################
+mt20<-read_df("/home/garofalo/analysis/chemHMC/Argon/VII/out/RDF_Ar-VII.txt_raw_correlators_bin20")
+all_obs20<- get_all_corr(mt20)
+
+df<-add_corr_to_df(string = "bin=20",all_obs=all_obs20,mt=mt20,df,
+                   log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+########################
+mt50<-read_df("/home/garofalo/analysis/chemHMC/Argon/VII/out/RDF_Ar-VII.txt_raw_correlators_bin50")
+all_obs50<- get_all_corr(mt50)
+
+df<-add_corr_to_df(string = "bin=50",all_obs=all_obs50,mt=mt50,df,
+                   log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+
+
+gg<- plot_df_corr_ggplot(df,noribbon = TRUE)
+
+fig<- myplotly(gg,"","r", '$g(r)$', to_print=TRUE )
+
+```

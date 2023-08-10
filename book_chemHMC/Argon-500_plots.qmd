@@ -1,0 +1,63 @@
+# Argon 500 plots  
+
+```{r ,include=FALSE}
+library(Rose)
+library(ggplot2)
+library(plotly)
+library(knitr)
+library(hadron)
+df <- data.frame(x = 1:5, y = 1:5)
+f1 <- function(df) {
+  gg <- ggplot(df, aes(x,y)) + geom_point()
+  assign("ggp", plotly::ggplotly(gg), envir=parent.frame())
+  #ggp
+  df    # NOT returning a plot
+}
+res1 <- f1(df)
+ggp   # Let knit handle the plot
+myplotly(ggplot())
+#widgetframe::frameableWidget(ggplotly(ggp)%>%config(mathjax = "cdn") )
+```
+
+
+```{r, echo=FALSE, results='asis', warning=FALSE}
+load( file = "Ar-500_HMC.Rdata")
+
+gg<-myggplot(shape=FALSE,fill=FALSE)
+gg<- gg + geom_point(aes(x=dfall$T, y=dfall$V))
+gg<- gg + geom_errorbar(aes(x=dfall$T, ymin=dfall$V-dfall$dV, 
+                        ymax=dfall$V+dfall$dV))
+fig<-myplotly(gg,"","T[K]","$\\langle V \\rangle$",to_print = TRUE)
+```
+
+
+<!-- ```{r, echo=FALSE, results='asis', warning=FALSE} -->
+
+<!-- gg<-myggplot(shape=FALSE,fill=FALSE) -->
+<!-- gg<- gg + geom_point(aes(x=dfall$T, y=dfall$K)) -->
+<!-- gg<- gg + geom_errorbar(aes(x=dfall$T, ymin=dfall$K-dfall$dK,  -->
+<!--                         ymax=dfall$K+dfall$dK)) -->
+<!-- fig<-myplotly(gg,"","T[K]","$\\langle K \\rangle$",to_print = TRUE) -->
+<!-- ``` -->
+
+
+
+<!-- ```{r, echo=FALSE, results='asis', warning=FALSE} -->
+
+<!-- gg<-myggplot(shape=FALSE,fill=FALSE) -->
+<!-- gg<- gg + geom_point(aes(x=dfall$T, y=dfall$K+dfall$V)) -->
+<!-- gg<- gg + geom_errorbar(aes(x=dfall$T, ymin=dfall$K+dfall$V-dfall$dK-dfall$dV,  -->
+<!--                         ymax=dfall$K+dfall$V+dfall$dK+dfall$dV)) -->
+<!-- fig<-myplotly(gg,"","T[K]","$\\langle K+V \\rangle$",to_print = TRUE) -->
+<!-- ``` -->
+
+
+<!-- ```{r, echo=FALSE, results='asis', warning=FALSE} -->
+
+<!-- gg<-myggplot(shape=FALSE,fill=FALSE) -->
+<!-- gg<- gg + geom_point(aes(x=dfall$T, y=dfall$H)) -->
+<!-- gg<- gg + geom_errorbar(aes(x=dfall$T, ymin=dfall$H-dfall$errH,  -->
+<!--                         ymax=dfall$H+dfall$errH)) -->
+<!-- fig<-myplotly(gg,"","T[K]","$\\beta\\langle H \\rangle$",to_print = TRUE) -->
+<!-- ``` -->
+

@@ -1,0 +1,33 @@
+project:
+  type: book
+
+book:
+  title: "book_chemHMC"
+  author: "MG"
+  date: today
+  chapters:
+    - index.qmd
+    - HMC_checks.qmd
+    - HMC_check_cutoff.qmd
+    - RDF.qmd
+    - Argon-500.qmd
+    - Argon-500_plots.qmd
+    - Argon-500_RDF.qmd
+    - Argon-475.qmd
+    - Argon-475_plots.qmd
+    - Argon-475_RDF.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: default
+    html-math-method: katex
+    #html-math-method: mathjax
+  # pdf:
+  #   documentclass: scrreprt
+
+
+

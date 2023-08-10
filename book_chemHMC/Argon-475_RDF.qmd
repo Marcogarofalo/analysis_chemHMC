@@ -1,0 +1,56 @@
+# Argon 475 RDF  
+
+```{r ,include=FALSE}
+library(Rose)
+library(ggplot2)
+library(plotly)
+library(knitr)
+library(hadron)
+df <- data.frame(x = 1:5, y = 1:5)
+f1 <- function(df) {
+  gg <- ggplot(df, aes(x,y)) + geom_point()
+  assign("ggp", plotly::ggplotly(gg), envir=parent.frame())
+  #ggp
+  df    # NOT returning a plot
+}
+res1 <- f1(df)
+ggp   # Let knit handle the plot
+myplotly(ggplot())
+#widgetframe::frameableWidget(ggplotly(ggp)%>%config(mathjax = "cdn") )
+```
+
+
+
+
+```{r, echo=FALSE, results='asis', warning=FALSE}
+
+df<-NULL
+for (T in c(90,120,130,320)){
+#for (T in c( 80, 140, 190)){
+  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/",T,
+               "K/out/RDF_Ar-475_",T,"K.txt_raw_correlators")
+  mt1<-read_df(file)
+  all_obs1<- get_all_corr(mt1)
+  
+  df<-add_corr_to_df(string = paste0("T",T,"K"),all_obs=all_obs1,mt=mt1,df=df,
+                     log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+  
+  #################
+  # file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/",T,
+  #              "K/out/RDF_Ar-475_",T,"K.txt_gamma")
+  # mt<-read_df(file)
+  # all_obs<- get_all_corr(mt)
+  # 
+ # df<-add_corr_to_df(string = "g(r)",all_obs=all_obs,mt=mt,df=df,
+ #                     log = FALSE, number = NULL,nudge = 0,print_res = FALSE,
+ #                     reshape=FALSE, rename = paste0("T",T,"K-gamma"))
+ # 
+  # 
+
+}
+df$x <- df$x*0.0333333333
+gg<- plot_df_corr_ggplot(df,noribbon = TRUE, width=0.1)
+
+fig<- myplotly(gg,"","r [A]", '$g(r)$', to_print=TRUE )
+
+```
