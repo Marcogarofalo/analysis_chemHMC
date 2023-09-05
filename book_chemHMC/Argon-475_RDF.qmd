@@ -22,30 +22,38 @@ myplotly(ggplot())
 
 
 
+
+
 ```{r, echo=FALSE, results='asis', warning=FALSE}
 
 df<-NULL
-for (T in c(90,120,130,320)){
+for (T in c(90, 110, 240)){
 #for (T in c( 80, 140, 190)){
   file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/",T,
                "K/out/RDF_Ar-475_",T,"K.txt_raw_correlators")
   mt1<-read_df(file)
   all_obs1<- get_all_corr(mt1)
   
-  df<-add_corr_to_df(string = paste0("T",T,"K"),all_obs=all_obs1,mt=mt1,df=df,
+  df<-add_corr_to_df(string = paste0("cold-T",T,"K"),all_obs=all_obs1,mt=mt1,df=df,
                      log = FALSE, number = 1,nudge = 0,print_res = FALSE)
   
   #################
-  # file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/",T,
-  #              "K/out/RDF_Ar-475_",T,"K.txt_gamma")
-  # mt<-read_df(file)
-  # all_obs<- get_all_corr(mt)
-  # 
- # df<-add_corr_to_df(string = "g(r)",all_obs=all_obs,mt=mt,df=df,
- #                     log = FALSE, number = NULL,nudge = 0,print_res = FALSE,
- #                     reshape=FALSE, rename = paste0("T",T,"K-gamma"))
- # 
-  # 
+
+
+# }
+# for (T in c(100, 200, 240)){
+#for (T in c( 80, 140, 190)){
+  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/hot_start/",T,
+               "K/out/RDF_Ar-475_",T,"K.txt_raw_correlators")
+  mt1<-read_df(file)
+  all_obs1<- get_all_corr(mt1)
+  
+  df<-add_corr_to_df(string = paste0("hot-T",T,"K"),all_obs=all_obs1,mt=mt1,df=df,
+                     log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+  
+  #################
+ 
+  
 
 }
 df$x <- df$x*0.0333333333

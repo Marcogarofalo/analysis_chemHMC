@@ -22,12 +22,19 @@ myplotly(ggplot())
 
 ```{r, echo=FALSE, results='asis', warning=FALSE}
 load( file = "Ar-500_HMC.Rdata")
+tmp<-dfall
+tmp$label<- "cold"
+load( file = "Ar-500_HMC_hot_start.Rdata")
+tmp1<-dfall_h
+tmp1$label<- "hot"
+tmp<-rbind(tmp,tmp1)
 
-gg<-myggplot(shape=FALSE,fill=FALSE)
-gg<- gg + geom_point(aes(x=dfall$T, y=dfall$V))
-gg<- gg + geom_errorbar(aes(x=dfall$T, ymin=dfall$V-dfall$dV, 
-                        ymax=dfall$V+dfall$dV))
-fig<-myplotly(gg,"","T[K]","$\\langle V \\rangle$",to_print = TRUE)
+gg<-myggplot(fill=FALSE)
+gg<- gg + geom_point(aes(x=tmp$T, y=tmp$V, color=tmp$label, shape=tmp$label))
+gg<- gg + geom_errorbar(aes(x=tmp$T, ymin=tmp$V-tmp$dV, 
+                        ymax=tmp$V+tmp$dV, color=tmp$label, shape=tmp$label))
+
+fig<-myplotly(gg,"","T[K]","$\\langle V \\rangle$",to_print = TRUE, legend_title = "start")
 ```
 
 

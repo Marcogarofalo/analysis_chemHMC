@@ -1,0 +1,202 @@
+# Hot vs cold start 
+
+Here we are comparing the result of the HMC with
+
+```{.yaml}
+geometry:
+  Lx: 26.8 # A
+  Ly: 26.8
+  Lz: 26.8
+
+particles:
+  name: identical_particles
+  name_xyz: Ar
+  N: 500
+  mass: 39.948   # g.mol-1
+  beta: 77.36345414497056 # 1/ev # ---> 150K #  beta=1/(kT) 
+  cutoff: 12.0
+  eps: 0.01042332126  #  ev
+  sigma: 3.4 # A
+  algorithm: all_neighbour_inner_parallel
+  RDF:
+    Lmax: 12
+    size_bin: 0.033333  # 300 x nanometer # 30 x Angstrom
+    output_file: RDF_Ar-500_150K.txt
+```
+
+starting from an initial condition:
+ 
+ - Cold: i.e. a regular FCC lattice with the length of
+the cube equal to 5.36
+ 
+ - Hot: the last configuration of the HMC run at 300K where we check explicitly 
+  the system was in a liquid state (lookig at the radial distribution function)
+
+```{r ,include=FALSE}
+library(Rose)
+library(ggplot2)
+library(plotly)
+library(knitr)
+library(hadron)
+df <- data.frame(x = 1:5, y = 1:5)
+f1 <- function(df) {
+  gg <- ggplot(df, aes(x,y)) + geom_point()
+  assign("ggp", plotly::ggplotly(gg), envir=parent.frame())
+  #ggp
+  df    # NOT returning a plot
+}
+res1 <- f1(df)
+ggp   # Let knit handle the plot
+#widgetframe::frameableWidget(ggplotly(ggp)%>%config(mathjax = "cdn") )
+```
+
+
+
+### cold
+
+```{r, echo=FALSE, results='asis', warning=FALSE}
+
+dfall_cold<-data.frame("T"=c(0),
+                "H"=c(0),"errH"=c(0),
+                "K"=c(0),"dK"=c(0),
+                "V"=c(0),"dV"=c(0),
+                "dH"=c(0),"ddH"=c(0),
+                "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
+                )
+count<-1
+T<-150
+file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/",T,"K/HMC_hystory_",T,"K.txt")
+
+
+if(file.exists(file)){
+
+    dft<-data.frame("obs"=c("K","V","dH","exp(-dH)"), "ave"=rep(1,4), "tauint"=rep(1,4) )
+    df<-read.table(file, header = TRUE)
+    myl<-list(T,2,3,4,5)
+    cat("sampling every 100 trajectories \n\n")
+    lines<-seq(100,length(df[,1]),100)
+    
+    for (i in c(1,2,3,4)){
+      tmp<-uwerrprimary(df[lines,i+1])
+      myl[[2+(i-1)*2]]<-tmp$value
+      myl[[3+(i-1)*2]]<-tmp$dvalue
+      
+      dft[i,2]<- mean_print(tmp$value,tmp$dvalue)
+      dft[i,3]<- mean_print(tmp$tauint,tmp$dtauint)
+    }
+    dfall_cold[count, ]<- myl
+    count<- count+1
+    print(kable(dft))
+}
+  
+
+```
+
+
+### hot
+
+```{r, echo=FALSE, results='asis', warning=FALSE}
+
+dfall_hot<-data.frame("T"=c(0),
+                "H"=c(0),"errH"=c(0),
+                "K"=c(0),"dK"=c(0),
+                "V"=c(0),"dV"=c(0),
+                "dH"=c(0),"ddH"=c(0),
+                "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
+                )
+count<-1
+T<-150
+file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/hot_start/",T,"K/HMC_hystory_",T,"K.txt")
+
+
+if(file.exists(file)){
+
+    dft<-data.frame("obs"=c("K","V","dH","exp(-dH)"), "ave"=rep(1,4), "tauint"=rep(1,4) )
+    df<-read.table(file, header = TRUE)
+    myl<-list(T,2,3,4,5)
+    cat("sampling every 100 trajectories \n\n")
+    lines<-seq(100,length(df[,1]),100)
+    
+    for (i in c(1,2,3,4)){
+      tmp<-uwerrprimary(df[lines,i+1])
+      myl[[2+(i-1)*2]]<-tmp$value
+      myl[[3+(i-1)*2]]<-tmp$dvalue
+      
+      dft[i,2]<- mean_print(tmp$value,tmp$dvalue)
+      dft[i,3]<- mean_print(tmp$tauint,tmp$dtauint)
+    }
+    dfall_hot[count, ]<- myl
+    count<- count+1
+    print(kable(dft))
+}
+  
+
+```
+
+## HMC hystory
+
+```{r, echo=FALSE, results='asis', warning=FALSE}
+T<-150
+dfa<-NULL
+################
+
+file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/hot_start/",T,"K/HMC_hystory_notherm_",T,"K.txt")
+tmp<-read.table(file, header = TRUE)
+lines<-seq(1,length(tmp[,1]),100)
+tmp<-tmp[lines,]
+tmp$t<-c(1:length(tmp[,1]))
+tmp$label<-"hot-start"
+dfa<-rbind(dfa,tmp[,])
+################
+
+file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/",T,"K/HMC_hystory_notherm_",T,"K.txt")
+tmp<-read.table(file, header = TRUE)
+lines<-seq(1,length(tmp[,1]),10)
+tmp<-tmp[lines,]
+tmp$t<-c(1:length(tmp[,1]))
+tmp$label<-"cold-start"
+dfa<-rbind(dfa,tmp[,])
+################
+gg<- ggplot()+theme_bw()#myggplot(shape = FALSE, fill = FALSE)
+gg<- gg+ geom_line(aes(x=dfa$t, y=dfa$V, color=dfa$label))
+#gg<- gg+scale_y_continuous(trans='log10')+geom_vline(xintercept = 20e+3)
+fig<-myplotly(gg,"","t(HMC)","U",
+              legend_title = "", legend_position = c(0.8,0.95), to_print = TRUE)
+
+noterm<-seq(2e+4,dim(dfa)[1],by=1000)
+```
+
+## RDF
+
+
+```{r, echo=FALSE, results='asis', warning=FALSE}
+
+df<-NULL
+for (T in c(150)){
+#for (T in c( 80, 140, 190)){
+  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/",T,
+               "K/out/RDF_Ar-500_",T,"K.txt_raw_correlators")
+  mt1<-read_df(file)
+  all_obs1<- get_all_corr(mt1)
+  
+  df<-add_corr_to_df(string = paste0("T",T,"K-cold-start"),all_obs=all_obs1,mt=mt1,df=df,
+                     log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+  #################
+  
+  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/hot_start/",T,
+               "K/out/RDF_Ar-500_",T,"K.txt_raw_correlators")
+  mt1<-read_df(file)
+  all_obs1<- get_all_corr(mt1)
+  
+  df<-add_corr_to_df(string = paste0("T",T,"K-hot-start"),all_obs=all_obs1,mt=mt1,df=df,
+                     log = FALSE, number = 1,nudge = 0,print_res = FALSE)
+  #################
+  
+
+}
+df$x <- df$x*0.0333333333
+gg<- plot_df_corr_ggplot(df,noribbon = TRUE, width=0.1)
+
+fig<- myplotly(gg,"","r [A]", '$g(r)$', to_print=TRUE )
+
+```

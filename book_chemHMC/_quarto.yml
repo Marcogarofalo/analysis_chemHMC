@@ -13,9 +13,12 @@ book:
     - Argon-500.qmd
     - Argon-500_plots.qmd
     - Argon-500_RDF.qmd
+    - Hot_vs_cold_start.qmd
     - Argon-475.qmd
     - Argon-475_plots.qmd
     - Argon-475_RDF.qmd
+    - Selected_case_475.qmd
+    - Seed_comparison.qmd
     - summary.qmd
     - references.qmd
 
