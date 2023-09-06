@@ -30,7 +30,7 @@ dfall<-data.frame("T"=c(0),
                 "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
                 )
 count<-1
-for( T in seq(90,320,10) ){
+for( T in seq(50,320,10) ){
   file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/",T,"K/HMC_hystory_",T,"K.txt")
   if(file.exists(file)){
     cat("### T=",T,"K\n\n")
@@ -77,7 +77,7 @@ dfall_h<-data.frame("T"=c(0),
                 "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
                 )
 count<-1
-for( T in seq(80,300,10) ){
+for( T in seq(50,300,10) ){
   file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/hot_start/",T,"K/HMC_hystory_",T,"K.txt")
   if(file.exists(file)){
     cat("### T=",T,"K\n\n")
@@ -128,7 +128,7 @@ dfall_c24<-data.frame("T"=c(0),
                 "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
                 )
 count<-1
-for( T in seq(80,300,10) ){
+for( T in seq(50,300,10) ){
   file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/cutoff/",T,"K/HMC_hystory_",T,"K.txt")
   if(file.exists(file)){
     cat("### T=",T,"K\n\n")
@@ -179,7 +179,7 @@ dfall_c24_h<-data.frame("T"=c(0),
                 "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
                 )
 count<-1
-for( T in seq(80,300,10) ){
+for( T in seq(50,300,10) ){
   file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/cutoff/hot_start/",T,"K/HMC_hystory_",T,"K.txt")
   if(file.exists(file)){
     cat("### T=",T,"K\n\n")
