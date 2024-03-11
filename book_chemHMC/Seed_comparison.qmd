@@ -48,6 +48,20 @@ tmp1$cutoff<- 24
 tmp1$start<-"hot"
 tmp<-rbind(tmp,tmp1)
 
+load( file = "Ar-475_HMC_cutoff100.Rdata")
+tmp1<-dfall_c100
+tmp1$seed<-475
+tmp1$start<-"cold"
+tmp1$cutoff<- 100
+tmp<-rbind(tmp,tmp1)
+
+load( file = "Ar-475_HMC_cutoff100_hot_start.Rdata")
+tmp1<-dfall_c100_h
+tmp1$seed<-475
+tmp1$cutoff<- 100
+tmp1$start<-"hot"
+tmp<-rbind(tmp,tmp1)
+
 load( file = "Ar-500_HMC.Rdata")
 tmp1<-dfall
 tmp1$seed<-500

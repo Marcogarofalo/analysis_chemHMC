@@ -1,0 +1,144 @@
+# Argon high cutoff
+
+```{r ,include=FALSE}
+library(Rose)
+library(ggplot2)
+library(plotly)
+library(knitr)
+library(hadron)
+df <- data.frame(x = 1:5, y = 1:5)
+f1 <- function(df) {
+  gg <- ggplot(df, aes(x,y)) + geom_point()
+  assign("ggp", plotly::ggplotly(gg), envir=parent.frame())
+  #ggp
+  df    # NOT returning a plot
+}
+res1 <- f1(df)
+ggp   # Let knit handle the plot
+myplotly(ggplot())
+#widgetframe::frameableWidget(ggplotly(ggp)%>%config(mathjax = "cdn") )
+```
+
+
+```{r, echo=FALSE, results='asis', warning=FALSE, dev='tikz'}
+
+
+load( file = "Ar-475_HMC_cutoff100.Rdata")
+tmp<-dfall_c100
+tmp$seed<-475
+tmp$start<-"cold"
+tmp$cutoff<- 100
+#tmp<-rbind(tmp,tmp1)
+
+
+load( file = "Ar-475_HMC_cutoff100_hot_start.Rdata")
+tmp1<-dfall_c100_h
+tmp1$seed<-475
+tmp1$cutoff<- 100
+tmp1$start<-"hot"
+tmp<-rbind(tmp,tmp1)
+
+load( file = "Ar-475_HMC_cutoff100_sigmaT_epsT.Rdata")
+tmp1<-dfall_c100
+tmp1$seed<-475
+tmp1$start<-"cold_sT_eT"
+tmp1$cutoff<- 100
+tmp<-rbind(tmp,tmp1)
+
+
+load( file = "Ar-500_HMC_cutoff100.Rdata")
+tmp1<-dfall_c100
+tmp1$seed<-500
+tmp1$start<-"cold"
+tmp1$cutoff<- 100
+tmp<-rbind(tmp,tmp1)
+
+load( file = "Ar-500_HMC_cutoff100_hot_start.Rdata")
+tmp1<-dfall_c100_h
+tmp1$seed<-500
+tmp1$cutoff<- 100
+tmp1$start<-"hot"
+tmp<-rbind(tmp,tmp1)
+
+
+
+load( file = "Ar-450_HMC_cutoff100.Rdata")
+tmp1<-dfall_c100
+tmp1$seed<-450
+tmp1$start<-"cold"
+tmp1$cutoff<- 100
+tmp<-rbind(tmp,tmp1)
+
+load( file = "Ar-450_HMC_cutoff100_hot_start.Rdata")
+tmp1<-dfall_c100_h
+tmp1$seed<-450
+tmp1$cutoff<- 100
+tmp1$start<-"hot"
+tmp<-rbind(tmp,tmp1)
+
+
+
+load( file = "Ar-425_HMC_cutoff100.Rdata")
+tmp1<-dfall_c100
+tmp1$seed<-425
+tmp1$start<-"cold"
+tmp1$cutoff<- 100
+tmp<-rbind(tmp,tmp1)
+
+load( file = "Ar-425_HMC_cutoff100_hot_start.Rdata")
+tmp1<-dfall_c100_h
+tmp1$seed<-425
+tmp1$cutoff<- 100
+tmp1$start<-"hot"
+tmp<-rbind(tmp,tmp1)
+
+
+
+load( file = "Ar-400_HMC_cutoff100.Rdata")
+tmp1<-dfall_c100
+tmp1$seed<-400
+tmp1$start<-"cold"
+tmp1$cutoff<- 100
+tmp<-rbind(tmp,tmp1)
+
+load( file = "Ar-400_HMC_cutoff100_hot_start.Rdata")
+tmp1<-dfall_c100_h
+tmp1$seed<-400
+tmp1$cutoff<- 100
+tmp1$start<-"hot"
+tmp<-rbind(tmp,tmp1)
+
+
+############################################################
+
+load( file = "Ar-4000_HMC_cutoff200.Rdata")
+tmp1<-dfall_c100
+tmp1$seed<-4000
+tmp1$start<-"cold"
+tmp1$cutoff<- 200
+tmp<-rbind(tmp,tmp1)
+
+
+write.csv(tmp[,c(1,6,7,12,13,14)],"data_HMC_cutoff100.csv",row.names = FALSE)
+
+gg<-myggplot(fill=FALSE)
+label<-paste0(tmp$seed,"-",tmp$start,"-cut",tmp$cutoff)
+gg<- gg + geom_point(aes(x=tmp$T, y=tmp$V/tmp$seed, color=label, shape=label), size=1,
+                     stroke=1.5)
+gg<- gg + geom_line(aes(x=tmp$T, y=tmp$V/tmp$seed, color=label, shape=label), size=0.5,
+                     stroke=0.5)
+
+gg<- gg + geom_errorbar(aes(x=tmp$T, ymin=(tmp$V-tmp$dV)/tmp$seed, 
+                        ymax=(tmp$V+tmp$dV)/tmp$seed, color=label, shape=label),
+                        width=2, linewidth=1.5)
+
+fig<-myplotly(gg,"","$T$[K]","$\\langle V \\rangle/N\\text{[eV]}$",to_print = TRUE,
+              legend_title = "seed", legend_position = c(0.75,0.2))
+gg<-gg+ theme(text = element_text(size=20),
+                legend.text = element_text(size=20))
+# fig<-myplotly(gg,"","$T$[K]","$\\langle V \\rangle$[eV]",save_pdf = "Ar_HMC_seed_comparison", 
+#               to_print = FALSE,
+#               legend_title = "seed", legend_position = c(0.75,0.2))
+
+```
+

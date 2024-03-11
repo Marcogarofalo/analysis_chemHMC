@@ -1,4 +1,4 @@
-# Argon 500 HMC runs  
+# Argon 475 HMC runs sigmaT epsT
 
 ```{r ,include=FALSE}
 library(Rose)
@@ -20,101 +20,6 @@ ggp   # Let knit handle the plot
 
 
 
-```{r, echo=FALSE, results='asis', warning=FALSE, cache=TRUE}
-# 1
-dfall<-data.frame("T"=c(0),
-                "H"=c(0),"errH"=c(0),
-                "K"=c(0),"dK"=c(0),
-                "V"=c(0),"dV"=c(0),
-                "dH"=c(0),"ddH"=c(0),
-                "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
-                )
-count<-1
-for( T in seq(80,300,10) ){
-  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/",T,"K/HMC_hystory_",T,"K.txt")
-  if(file.exists(file)){
-    cat("### T=",T,"K\n\n")
-    dft<-data.frame("obs"=c("H","K","V","dH","exp(-dH)"), "ave"=rep(1,5), "tauint"=rep(1,5) )
-    df<-read.table(file, header = TRUE)
-    myl<-list(T,1,2,3,4,5)
-    lines<-c(1:length(df[,1]))
-    
-    cat("sampling every 100 trajectories \n\n")
-    lines<-seq(100,length(df[,1]),100)
-    
-    for (i in c(1,2,3,4,5)){
-      tmp<-uwerrprimary(df[lines,i])
-      myl[[2+(i-1)*2]]<-tmp$value
-      myl[[3+(i-1)*2]]<-tmp$dvalue
-      if (i==3 & (T==74 | T>200 ) ){
-        plot(tmp, main="V")
-      }
-      if(i==4){
-        gg<- ggplot(df[lines,],aes( df[lines,i]) )+ geom_histogram(bins = 100) +theme_bw()
-        fig1<-myplotly(gg,xlabel ="$H$" , to_print = TRUE)
-      }
-      dft[i,2]<- mean_print(tmp$value,tmp$dvalue)
-      dft[i,3]<- mean_print(tmp$tauint,tmp$dtauint)
-    }
-    dfall[count, ]<- myl
-    count<- count+1
-    print(kable(dft))
-  }
-  
-}
-save(dfall, file = "Ar-500_HMC.Rdata")
-
-```
-
-
-## hot start
-
-```{r, echo=FALSE, results='asis', warning=FALSE, cache=TRUE}
-# 1
-dfall_h<-data.frame("T"=c(0),
-                "H"=c(0),"errH"=c(0),
-                "K"=c(0),"dK"=c(0),
-                "V"=c(0),"dV"=c(0),
-                "dH"=c(0),"ddH"=c(0),
-                "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
-                )
-count<-1
-for( T in seq(80,300,10) ){
-  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/hot_start/",T,"K/HMC_hystory_",T,"K.txt")
-  if(file.exists(file)){
-    cat("### T=",T,"K\n\n")
-    dft<-data.frame("obs"=c("H","K","V","dH","exp(-dH)"), "ave"=rep(1,5), "tauint"=rep(1,5) )
-    df<-read.table(file, header = TRUE)
-    myl<-list(T,1,2,3,4,5)
-    lines<-c(1:length(df[,1]))
-    
-    cat("sampling every 100 trajectories \n\n")
-    lines<-seq(100,length(df[,1]),100)
-    
-    for (i in c(1,2,3,4,5)){
-      tmp<-uwerrprimary(df[lines,i])
-      myl[[2+(i-1)*2]]<-tmp$value
-      myl[[3+(i-1)*2]]<-tmp$dvalue
-      if (i==3 & (T==74 | T>200 ) ){
-        plot(tmp, main="V")
-      }
-      if(i==4){
-        gg<- ggplot(df[lines,],aes( df[lines,i]) )+ geom_histogram(bins = 100) +theme_bw()
-        fig1<-myplotly(gg,xlabel ="$H$" , to_print = TRUE)
-      }
-      dft[i,2]<- mean_print(tmp$value,tmp$dvalue)
-      dft[i,3]<- mean_print(tmp$tauint,tmp$dtauint)
-    }
-    dfall_h[count, ]<- myl
-    count<- count+1
-    print(kable(dft))
-  }
-  
-}
-save(dfall_h, file = "Ar-500_HMC_hot_start.Rdata")
-
-```
-
 
 
 
@@ -130,8 +35,8 @@ dfall_c100<-data.frame("T"=c(0),
                 "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
                 )
 count<-1
-for( T in seq(50,300,10) ){
-  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/cutoff100/",T,"K/HMC_hystory_",T,"K.txt")
+for( T in seq(30,300,10) ){
+  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/cutoff100/sigmaT_epsT/",T,"K/HMC_hystory_",T,"K.txt")
   if(file.exists(file)){
     cat("### T=",T,"K\n\n")
     dft<-data.frame("obs"=c("H","K","V","dH","exp(-dH)"), "ave"=rep(1,5), "tauint"=rep(1,5) )
@@ -166,7 +71,7 @@ for( T in seq(50,300,10) ){
   }
   
 }
-save(dfall_c100, file = "Ar-500_HMC_cutoff100.Rdata")
+save(dfall_c100, file = "Ar-475_HMC_cutoff100_sigmaT_epsT.Rdata")
 
 ```
 
@@ -184,8 +89,8 @@ dfall_c100_h<-data.frame("T"=c(0),
                 "exp(-dH)"=c(0),"dexp(-dH)"=c(0)
                 )
 count<-1
-for( T in seq(50,300,10) ){
-  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-500/cutoff100/hot_start/",T,"K/HMC_hystory_",T,"K.txt")
+for( T in seq(30,300,10) ){
+  file<-paste0("/home/garofalo/analysis/chemHMC/Argon/Ar-475/cutoff100/hot_start/sigmaT_epsT/",T,"K/HMC_hystory_",T,"K.txt")
   if(file.exists(file)){
     cat("### T=",T,"K\n\n")
     dft<-data.frame("obs"=c("H","K","V","dH","exp(-dH)"), "ave"=rep(1,5), "tauint"=rep(1,5) )
@@ -219,7 +124,8 @@ for( T in seq(50,300,10) ){
   }
   
 }
-save(dfall_c100_h, file = "Ar-500_HMC_cutoff100_hot_start.Rdata")
+save(dfall_c100_h, file = "Ar-475_HMC_cutoff100_sigmaT_epsT_hot_start.Rdata")
 
 ```
+
 

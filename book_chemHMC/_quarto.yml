@@ -15,10 +15,16 @@ book:
     - Argon-500_RDF.qmd
     - Hot_vs_cold_start.qmd
     - Argon-475.qmd
+    - Argon-475_sigmaT_epsT.qmd
     - Argon-475_plots.qmd
     - Argon-475_RDF.qmd
     - Selected_case_475.qmd
+    - Argon-450.qmd
+    - Argon-425.qmd
+    - Argon-400.qmd
+    - Argon-4000.qmd
     - Seed_comparison.qmd
+    - All_high_cutoff.qmd
     - summary.qmd
     - references.qmd
 
